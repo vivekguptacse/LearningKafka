@@ -7,6 +7,11 @@ import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Properties;
 
+/**
+ * KafkaProducer class which Produces the messages send for Kafka Consumers.
+ * @author - Vivek Kumar Gupta
+ *
+ */
 public class KafkaProducerExample {
 
     private static final String BOOTSTRAP_SERVER = "127.0.0.1:9092";
