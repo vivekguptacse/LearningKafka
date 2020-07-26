@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Class representing cponfig properties and it will be injected via guice.
+ * Class representing config properties and it will be injected via guice.
  *
  * @author : Vivek Kumar Gupta
  * @since : 20/07/20

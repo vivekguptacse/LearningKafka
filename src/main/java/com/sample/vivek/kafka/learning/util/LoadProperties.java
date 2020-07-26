@@ -15,6 +15,8 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 
 /**
+ * Load the properties from the file.
+ *
  * @author : Vivek Kumar Gupta
  * @since : 20/07/20
  */

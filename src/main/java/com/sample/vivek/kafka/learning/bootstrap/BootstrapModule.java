@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Class which binds the properties to a class variables using Google Juice injection.
+ *
  * @author : Vivek Kumar Gupta
  * @since : 20/07/20
  */
