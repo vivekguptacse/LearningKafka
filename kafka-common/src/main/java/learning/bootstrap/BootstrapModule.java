@@ -1,0 +1,30 @@
+package learning.bootstrap;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.name.Names;
+import learning.exception.PropertyReadException;
+import learning.util.LoadProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Class which binds the properties to a class variables using Google Juice injection.
+ *
+ * @author : Vivek Kumar Gupta
+ * @since : 20/07/20
+ */
+public class BootstrapModule extends AbstractModule {
+
+    private static final Logger logger = LoggerFactory.getLogger(BootstrapModule.class);
+
+    @Override
+    protected void configure() {
+        // Bind the properties
+
+        try {
+            Names.bindProperties(binder(), LoadProperties.loadPropertiesFile());
+        } catch (PropertyReadException e) {
+            logger.error("Error while reading configuration file.");
+        }
+    }
+}
