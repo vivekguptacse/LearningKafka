@@ -1,4 +1,4 @@
-package com.sample.vivek.kafka.learning.producer;
+package learning.producer;
 
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;

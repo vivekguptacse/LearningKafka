@@ -1,11 +1,10 @@
-package com.sample.vivek.kafka.learning.producer;
+package learning.producer;
 
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLOutput;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
