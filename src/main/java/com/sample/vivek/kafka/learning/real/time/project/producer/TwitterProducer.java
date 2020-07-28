@@ -14,11 +14,14 @@ import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint;
 import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
+import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -62,25 +65,58 @@ public class TwitterProducer {
         // Attempts to establish a connection.
         client.connect();
 
-
         // Create Kafka Producer
+        KafkaProducer<String, String> kafkaProducer = createKafkaProducer();
 
+        // Add a shutdown hook
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("Shutding down application. ");
+            logger.info("Shutting down client");
+            client.stop();
+            logger.info("Closing producer.");
+            kafkaProducer.close();
+            logger.info("Done..");
+
+        }));
         // Send Messages to kafka.
-
         // on a different thread, or multiple different threads....
         while (!client.isDone()) {
             String msg = null;
             try {
                 msg = msgQueue.poll(5, TimeUnit.SECONDS);
+                if (null != msg) {
+                    ProducerRecord<String, String> record = new ProducerRecord<>("first_topic", msg);
+                    kafkaProducer.send(record, new Callback() {
+                        @Override
+                        public void onCompletion(RecordMetadata recordMetadata, Exception e) {
+                            if (null != e) {
+                                logger.error("Error Happened while producing msg", e);
+                            } else {
+                                logger.info("Msssage Sent to kafka Topic");
+                            }
+
+                        }
+                    });
+
+                }
+
             } catch (InterruptedException e) {
-                e.printStackTrace();
-                client.stop();
+               logger.error("Error Happened while producing msg. " , e);
             }
             logger.info(msg);
 
         }
 
         logger.info("Exiting the Application...");
+    }
+
+    private KafkaProducer<String, String> createKafkaProducer() {
+        Properties properties = new Properties();
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        return new KafkaProducer<String, String>(properties);
     }
 
 
